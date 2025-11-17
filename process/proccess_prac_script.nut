@@ -334,6 +334,7 @@ const RED_SECOND_ENT_NAME = "cp_red2";
 const RED_LAST_ENT_NAME = "cp_red1";
 const BLU_SECOND_ENT_NAME = "cp_blu2";
 const BLU_LAST_ENT_NAME = "cp_blu1";
+const GAME_TEXT_ENT_NAME = "hud_msg";
 
 
 // pointState corresponds to calling these since can't update cp's before round active
@@ -397,10 +398,10 @@ function CapPointForTeam(point, team)
         local skinIndex = 0;
         switch (team)
         {
-            case "2": // RED
+            case RED:
                 skinIndex = 1;
                 break;
-            case "3": // BLU
+            case BLU:
                 skinIndex = 2;
                 break;
             default:
@@ -435,4 +436,18 @@ function CapPointForTeam(point, team)
         }
     }
     printl("GiveTeamUber: Set uber for team " + team + " medics to " + amount + "%.");
+}
+
+// displays a message on the game_text entity
+::ShowMessage <- function(msg)
+{
+    local gt = Entities.FindByName(null, GAME_TEXT_ENT_NAME);
+    if (gt == null)
+    {
+        printl("ShowHUDMessage: ERROR - Did not find game_text named " + GAME_TEXT_ENT_NAME + ".");
+        return;
+    }
+
+    EntFireByHandle(gt, "AddOutput", "message " + msg, 0.0, null, null);
+    EntFireByHandle(gt, "Display", "", 0.01, null, null);
 }

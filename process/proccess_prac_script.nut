@@ -49,7 +49,11 @@ function RedMidToLastAd()
     TeleportPlayers(TF_TEAM_RED, MID);
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
-    bluObjPoint = BLU_SECOND;
+    bluObjPoint = BLU_SECOND; 
+    ShowMessage("Mid to Last AD Push\n" +
+                "RED must cap last to win\n" +
+                "BLU must cap second or further to win"
+               );
 }
 
 function BluMidToLastAd()
@@ -59,6 +63,10 @@ function BluMidToLastAd()
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
+    ShowMessage("Mid to Last AD Push\n" +
+                "RED must cap second or further to win\n" +
+                "BLU must cap last to win"
+               );    
 }
 
 function RedSecondToLastAd()
@@ -68,6 +76,10 @@ function RedSecondToLastAd()
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
     bluObjPoint = BLU_SECOND;
+    ShowMessage("Second to Last AD Push\n" +
+                "RED must cap last to win\n" +
+                "BLU must cap second to win"
+               );
 }
 
 function BluSecondToLastAd()
@@ -77,6 +89,10 @@ function BluSecondToLastAd()
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
+    ShowMessage("Second to Last AD Push\n" +
+                "RED must cap second to win\n" +
+                "BLU must cap last to win"
+               );
 }
 
 // dry game states require pushing two points with one ad
@@ -88,6 +104,10 @@ function RedMidToLastDryAd()
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
     bluObjPoint = BLU_SECOND;
+    ShowMessage("Mid to Last DRY Push\n" +
+                "RED must cap last to win\n" +
+                "BLU must cap second or further to win"
+               );
 }
 
 function BluMidToLastDryAd()
@@ -98,6 +118,10 @@ function BluMidToLastDryAd()
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
+    ShowMessage("Mid to Last DRY Push\n" +
+                "RED must cap second or further to win\n" +
+                "BLU must cap last to win"
+               );
 }
 
 function RedSecondToSecondDryAd()
@@ -108,6 +132,10 @@ function RedSecondToSecondDryAd()
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_SECOND;
     bluObjPoint = MID;
+    ShowMessage("Second to Second DRY Push\n" +
+                "RED must cap second to win\n" +
+                "BLU must cap mid or further to win"
+               );
 }
 
 function BluSecondToSecondDryAd()
@@ -117,7 +145,11 @@ function BluSecondToSecondDryAd()
     TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = MID;
-    bluObjPoint = RED_LAST;
+    bluObjPoint = RED_SECOND;
+    ShowMessage("Second to Second DRY Push\n" +
+                "RED must cap mid or further to win\n" +
+                "BLU must cap second to win"
+               );
 }
 
 // even states
@@ -130,6 +162,10 @@ function RedMidToSecondEven()
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = BLU_SECOND;
     bluObjPoint = MID;
+    ShowMessage("Mid to Second EVEN\n" +
+                "RED must cap second to win\n" +
+                "BLU must cap mid to win"
+               );
 }
 
 function BluMidToSecondEven()
@@ -139,8 +175,12 @@ function BluMidToSecondEven()
     TeleportPlayers(TF_TEAM_BLU, MID);
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
-    redObjPoint = RED_SECOND;
-    bluObjPoint = MID;
+    redObjPoint = MID;
+    bluObjPoint = RED_SECOND;
+    ShowMessage("Mid to Second EVEN\n" +
+                "RED must cap mid to win\n" +
+                "BLU must cap second to win"
+               );
 }
 
 function RedSecondToLastEven()
@@ -151,16 +191,24 @@ function RedSecondToLastEven()
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
     bluObjPoint = BLU_SECOND;
+    ShowMessage("Second to Last EVEN\n" +
+                "RED must cap last to win\n" +
+                "BLU must cap second to win"
+               );
 }
 
 function BluSecondToLastEven()
 {
     pointState = BLU_OWNS_SECOND;
-    TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
+    TeleportPlayers(TF_TEAM_BLU, RED_SECOND);
     GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
+    ShowMessage("Second to Last EVEN\n" +
+                "RED must cap second to win\n" +
+                "BLU must cap last to win"
+               );
 }
 
 ::GameStates <- {
@@ -169,7 +217,7 @@ function BluSecondToLastEven()
     "BluMidToLastAd"        : BluMidToLastAd,
     "RedSecondToLastAd"     : RedSecondToLastAd,
     "BluSecondToLastAd"     : BluSecondToLastAd,
-
+    
     // dry pushes
     "RedMidToLastDryAd"     : RedMidToLastDryAd,
     "BluMidToLastDryAd"     : BluMidToLastDryAd,
@@ -447,7 +495,7 @@ function CapPointForTeam(point, team)
     local gt = Entities.FindByName(null, GAME_TEXT_ENT_NAME);
     if (gt == null)
     {
-        printl("ShowHUDMessage: ERROR - Did not find game_text named " + GAME_TEXT_ENT_NAME + ".");
+        printl("ShowMessage: ERROR - Did not find game_text named " + GAME_TEXT_ENT_NAME + ".");
         return;
     }
 

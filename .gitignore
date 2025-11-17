@@ -2,3 +2,5 @@
 *.log
 *.prt
 *.vmx
+
+*.bsp

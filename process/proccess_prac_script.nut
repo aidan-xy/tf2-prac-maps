@@ -8,6 +8,13 @@ const MID = 2;
 const RED_SECOND = 3;
 const RED_LAST = 4;
 
+const RED_OWNS_MID = 0;
+const RED_OWNS_SECOND = 1;
+const BLU_OWNS_MID = 2;
+const BLU_OWNS_SECOND = 3;
+
+const UBER_AD_AMOUNT = 50.0;
+
 ::redObjPoint <- -1;
 ::bluObjPoint <- -1;
 
@@ -35,85 +42,170 @@ function CollectEventsInScope(events)
 	__CollectGameEventCallbacks(events)
 }
 
+// full ad last conversions from mid/second
 function RedMidToLastAd()
 {
-    pointState = 0;
+    pointState = RED_OWNS_MID;
     TeleportPlayers(TF_TEAM_RED, MID);
-    GiveTeamUber(TF_TEAM_RED, 50.0);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
     bluObjPoint = BLU_SECOND;
 }
 
 function BluMidToLastAd()
 {
-    pointState = 2;
+    pointState = BLU_OWNS_MID;
     TeleportPlayers(TF_TEAM_BLU, MID);
-    GiveTeamUber(TF_TEAM_BLU, 50.0);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
 }
 
 function RedSecondToLastAd()
 {
-    pointState = 1;
+    pointState = RED_OWNS_SECOND;
     TeleportPlayers(TF_TEAM_RED, BLU_SECOND);
-    GiveTeamUber(TF_TEAM_RED, 50.0);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_LAST;
     bluObjPoint = BLU_SECOND;
 }
 
 function BluSecondToLastAd()
 {
-    pointState = 3;
+    pointState = BLU_OWNS_SECOND;
     TeleportPlayers(TF_TEAM_BLU, RED_SECOND);
-    GiveTeamUber(TF_TEAM_BLU, 50.0);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
     redObjPoint = RED_SECOND;
     bluObjPoint = RED_LAST;
 }
 
-function RedMidToSecondAd()
+// dry game states require pushing two points with one ad
+function RedMidToLastDryAd()
 {
-    pointState = -1;
+    pointState = RED_OWNS_MID;
     TeleportPlayers(TF_TEAM_RED, MID);
     TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
-    GiveTeamUber(TF_TEAM_RED, 50.0);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
+    redObjPoint = BLU_LAST;
+    bluObjPoint = BLU_SECOND;
+}
+
+function BluMidToLastDryAd()
+{
+    pointState = BLU_OWNS_MID;
+    TeleportPlayers(TF_TEAM_RED, RED_SECOND);
+    TeleportPlayers(TF_TEAM_BLU, MID);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = RED_SECOND;
+    bluObjPoint = RED_LAST;
+}
+
+function RedSecondToSecondDryAd()
+{
+    pointState = BLU_OWNS_MID;
+    TeleportPlayers(TF_TEAM_RED, RED_SECOND);
+    TeleportPlayers(TF_TEAM_BLU, MID);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
     redObjPoint = BLU_SECOND;
     bluObjPoint = MID;
 }
 
-GameStates <- {
-    "Red Mid To Last With Ad" : RedMidToLastAd,
-    "Blu Mid To Last With Ad" : BluMidToLastAd,
-    "Red Second To Last With Ad" : RedSecondToLastAd,
-    "Blu Second To Last With Ad" : BluSecondToLastAd,
-    "Red Mid To Second With Ad" : RedMidToSecondAd
-};
+function BluSecondToSecondDryAd()
+{
+    pointState = RED_OWNS_MID;
+    TeleportPlayers(TF_TEAM_RED, MID);
+    TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = MID;
+    bluObjPoint = RED_LAST;
+}
+
+// even states
+function RedMidToSecondEven()
+{
+    pointState = RED_OWNS_MID;
+    TeleportPlayers(TF_TEAM_RED, MID);
+    TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = BLU_SECOND;
+    bluObjPoint = MID;
+}
+
+function BluMidToSecondEven()
+{
+    pointState = BLU_OWNS_MID;
+    TeleportPlayers(TF_TEAM_RED, RED_SECOND);
+    TeleportPlayers(TF_TEAM_BLU, MID);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = RED_SECOND;
+    bluObjPoint = MID;
+}
+
+function RedSecondToLastEven()
+{
+    pointState = RED_OWNS_SECOND;
+    TeleportPlayers(TF_TEAM_RED, BLU_SECOND);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = BLU_LAST;
+    bluObjPoint = BLU_SECOND;
+}
+
+function BluSecondToLastEven()
+{
+    pointState = BLU_OWNS_SECOND;
+    TeleportPlayers(TF_TEAM_BLU, BLU_SECOND);
+    GiveTeamUber(TF_TEAM_RED, UBER_AD_AMOUNT);
+    GiveTeamUber(TF_TEAM_BLU, UBER_AD_AMOUNT);
+    redObjPoint = RED_SECOND;
+    bluObjPoint = RED_LAST;
+}
+
+GameStates <- [
+    // last ad pushes
+    RedMidToLastAd,
+    BluMidToLastAd,
+    RedSecondToLastAd,
+    BluSecondToLastAd,
+    // dry pushes
+    RedMidToLastDryAd,
+    BluMidToLastDryAd,
+    RedSecondToSecondDryAd,
+    BluSecondToSecondDryAd,
+    // even states
+    RedMidToSecondEven,
+    BluMidToSecondEven,
+    RedSecondToLastEven,
+    BluMidToSecondEven
+];
 
 CollectEventsInScope
 ({
     function OnGameEvent_teamplay_round_start(params) {
-        local gameState = GameStates.keys()[RandomInt(0, GameStates.keys().len() - 1)];
+        local gameStateIndex = RandomInt(0, GameStates.len() - 1);
 
-        printl("OnGameEvent_teamplay_round_start: Creating game state " + gameState + ".");
-        GameStates[gameState]();
+        printl("OnGameEvent_teamplay_round_start: Creating game state with index " + gameStateIndex + ".");
+        GameStates[gameStateIndex]();
     }
 
     // cannot change cp ownership if round is not active, this is a workaround
     function OnGameEvent_teamplay_round_active(params) {
         switch (pointState)
         {
-            case (-1): // no cp ownership changes
+            case (-1): // if no cp ownership changes is needed
                 break;
-            case (0):
+            case (RED_OWNS_MID):
                 RedOwnsMid();
                 break;
-            case (1):
+            case (RED_OWNS_SECOND):
                 RedOwnsSecond();
                 break;
-            case (2):
+            case (BLU_OWNS_MID):
                 BluOwnsMid();
                 break;
-            case(3):
+            case(BLU_OWNS_SECOND):
                 BluOwnsSecond();
                 break;
             default:

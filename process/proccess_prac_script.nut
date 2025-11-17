@@ -163,31 +163,34 @@ function BluSecondToLastEven()
     bluObjPoint = RED_LAST;
 }
 
-GameStates <- [
+::GameStates <- {
     // last ad pushes
-    RedMidToLastAd,
-    BluMidToLastAd,
-    RedSecondToLastAd,
-    BluSecondToLastAd,
+    "RedMidToLastAd"        : RedMidToLastAd,
+    "BluMidToLastAd"        : BluMidToLastAd,
+    "RedSecondToLastAd"     : RedSecondToLastAd,
+    "BluSecondToLastAd"     : BluSecondToLastAd,
+
     // dry pushes
-    RedMidToLastDryAd,
-    BluMidToLastDryAd,
-    RedSecondToSecondDryAd,
-    BluSecondToSecondDryAd,
+    "RedMidToLastDryAd"     : RedMidToLastDryAd,
+    "BluMidToLastDryAd"     : BluMidToLastDryAd,
+    "RedSecondToSecondDryAd": RedSecondToSecondDryAd,
+    "BluSecondToSecondDryAd": BluSecondToSecondDryAd,
+
     // even states
-    RedMidToSecondEven,
-    BluMidToSecondEven,
-    RedSecondToLastEven,
-    BluMidToSecondEven
-];
+    "RedMidToSecondEven"    : RedMidToSecondEven,
+    "BluMidToSecondEven"    : BluMidToSecondEven,
+    "RedSecondToLastEven"   : RedSecondToLastEven,
+    "BluSecondToLastEven"   : BluSecondToLastEven
+};
+
 
 CollectEventsInScope
 ({
     function OnGameEvent_teamplay_round_start(params) {
-        local gameStateIndex = RandomInt(0, GameStates.len() - 1);
+        local gameState = GameStates.keys()[RandomInt(0, GameStates.keys().len() - 1)];
 
-        printl("OnGameEvent_teamplay_round_start: Creating game state with index " + gameStateIndex + ".");
-        GameStates[gameStateIndex]();
+        printl("OnGameEvent_teamplay_round_start: Creating game state " + gameState + ".");
+        GameStates[gameState]();
     }
 
     // cannot change cp ownership if round is not active, this is a workaround

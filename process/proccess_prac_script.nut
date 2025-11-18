@@ -27,6 +27,10 @@ const UBER_AD_AMOUNT = 50.0;
 ::pointState <- -1;
 ::uberState <- 0;
 
+::playerSpawns <- {};
+::charChangeable <- false;
+::playerManager <- Entities.FindByClassname(null, "tf_player_manager");
+
 // full ad last conversions from mid/second
 ::RedMidToLastAd <- function()
 {
@@ -270,6 +274,12 @@ function InitGameState()
     printl("SaveGameState: Saved gameState = " + gameState);
 }
 
+::ForceChangeClass <- function(player, class_index)
+{
+	player.SetPlayerClass(class_index)
+	NetProps.SetPropInt(player, "m_Shared.m_iDesiredPlayerClass", class_index)
+	player.ForceRegenerateAndRespawn()
+}
 
 function CollectEventsInScope(events)
 {
@@ -295,9 +305,30 @@ function CollectEventsInScope(events)
 
 CollectEventsInScope
 ({
+    function OnGameEvent_teamplay_round_start(params){
+        charChangeable = true;
+    }
+
+    function OnGameEvent_player_changeclass(params){
+        if (charChangeable && gameState != 0) {
+            local id = params.userid;
+            local player = GetPlayerFromUserID(id);
+            if (player == null) {
+                printl("OnGameEvent_player_changeclass: ERROR - Cannot find player " + id + ".");
+                return;
+            }
+
+            ForceChangeClass(player, params["class"]);
+            player.SetAbsOrigin(playerSpawns[id]);
+            player.SetAbsVelocity(Vector(0,0,0));
+        }
+    }
+
     // cannot change cp ownership if round is not active, this is a workaround
     // giving teams uber on round activation allows for last minute medic class switches
     function OnGameEvent_teamplay_round_active(params) {
+        charChangeable = false;
+
         switch (pointState)
         {
             case (-1): // if no cp ownership changes is needed
@@ -453,7 +484,18 @@ CollectEventsInScope
 
         p.SetAbsOrigin(pos);
         p.SetAbsVelocity(Vector(0,0,0));
+        
+        local userid = GetPlayerUserID(p);
+        playerSpawns[userid] <- spots[i];
     }
+}
+
+::GetPlayerUserID <- function(player)
+{
+    if (player == null || playerManager == null)
+        return -1;
+
+    return NetProps.GetPropIntArray(playerManager, "m_iUserID", player.entindex());
 }
 
 // names of the actual entities in the map file

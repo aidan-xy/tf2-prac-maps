@@ -309,9 +309,13 @@ CollectEventsInScope
         charChangeable = true;
     }
 
+    // allows class changes during setup time even if not in spawn
     function OnGameEvent_player_changeclass(params){
         if (charChangeable && gameState != 0) {
             local id = params.userid;
+            if (!playerSpawns.rawin(id))
+                return;
+
             local player = GetPlayerFromUserID(id);
             if (player == null) {
                 printl("OnGameEvent_player_changeclass: ERROR - Cannot find player " + id + ".");

@@ -536,14 +536,7 @@ const GAME_TEXT_ENT_NAME = "hud_msg";
     printl("CapPointForTeam: Set owner of " + point + " to " + team + ".");
 
     // changes point skin
-    local propName = point;
-    if (point == MID_ENT_NAME) // mid prop is prop_cap_C
-    {
-        propName = "prop_cap_C";
-    } else {
-        propName += "_prop";
-    }
-
+    local propName = point + "_prop";
     local cpProp = Entities.FindByName(null, propName);
     if (cpProp != null)
     {
